@@ -94,8 +94,10 @@ export function extractNameFromConfigURL(url: string) {
     const encodedString = url.replace("vmess://", "");
 
     try {
-      const decodedString = atob(encodedString);
-      const parsedData = JSON.parse(decodedString);
+      const jsonText = new TextDecoder().decode(
+        Uint8Array.from(atob(encodedString), (c) => c.charCodeAt(0))
+      );
+      const parsedData = JSON.parse(jsonText);
       return parsedData.ps ?? "Unnamed Config";
     } catch (error) {
       console.error("Invalid vmess URL format:", error);
